@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Algorithms and data structures enhancement of the Travlr Getaways full-stack application for the CS 499 Computer Science Capstone."
+    >
     <title>Algorithms and Data Structures | Justin M. Davis</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,11 +17,13 @@
         <p>Computer Science ePortfolio</p>
     </header>
 
-    <nav>
+    <nav aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="code-review.html">Code Review</a>
         <a href="software-engineering.html">Software Engineering</a>
-        <a href="algorithms.html">Algorithms &amp; Data Structures</a>
+        <a href="algorithms.html" aria-current="page">
+            Algorithms &amp; Data Structures
+        </a>
         <a href="databases.html">Databases</a>
     </nav>
 
@@ -25,15 +31,568 @@
         <section>
             <h2>Algorithms and Data Structures</h2>
 
-<p>
-    The algorithms and data structures enhancement and associated narrative
-    will be added during the CS 499 capstone project.
-</p>
+            <p>
+                The second enhancement to the
+                <strong>Travlr Getaways</strong> application focuses on
+                improving trip discovery through search, filtering, relevance
+                ranking, and sorting.
+            </p>
+
+            <p>
+                In the original application, the trip listing endpoint
+                retrieved the complete collection using an unfiltered database
+                query. This behavior was sufficient for the small dataset used
+                in the original CS 465 project, but it did not provide a useful
+                mechanism for locating or prioritizing trips as the collection
+                grew.
+            </p>
+
+            <p>
+                This enhancement introduces an algorithmic processing pipeline
+                that accepts optional search criteria, narrows candidate
+                results, evaluates those results, and returns an ordered set of
+                trips. The implementation demonstrates not only working
+                algorithms, but also the trade-offs involved in deciding where
+                data processing should occur.
+            </p>
+        </section>
+
+        <section>
+            <h2>Enhancement Overview</h2>
+
+            <div class="architecture-comparison">
+                <article>
+                    <h3>Original Retrieval</h3>
+
+                    <pre><code>Request
+  ↓
+Retrieve All Trips
+  ↓
+Return Complete Collection
+  ↓
+Display Results</code></pre>
+
+                    <p>
+                        The original implementation used an empty MongoDB query
+                        and returned every available trip. The client was given
+                        no search, filtering, ranking, or sorting capabilities.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Enhanced Discovery</h3>
+
+                    <pre><code>Search Criteria
+  ↓
+Normalize Input
+  ↓
+Retrieve Candidate Trips
+  ↓
+Apply Filters
+  ↓
+Calculate Relevance Scores
+  ↓
+Sort Results
+  ↓
+Return Ordered Collection</code></pre>
+
+                    <p>
+                        The enhanced implementation treats trip discovery as a
+                        sequence of data-processing operations. Each stage has
+                        a defined responsibility and can be evaluated or
+                        modified independently.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Search and Filtering</h2>
+
+            <p>
+                The enhanced API accepts optional query parameters that allow
+                callers to narrow the trip collection according to useful
+                characteristics rather than always retrieving an undifferentiated
+                list.
+            </p>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>Keyword Search</h3>
+
+                    <p>
+                        Keyword search evaluates relevant trip information and
+                        allows matching trips to be identified from textual
+                        search criteria.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Resort Filtering</h3>
+
+                    <p>
+                        Trips can be narrowed according to resort information,
+                        allowing a caller to retrieve packages associated with
+                        a particular destination or resort.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Price Range Filtering</h3>
+
+                    <p>
+                        Minimum and maximum price criteria are converted into
+                        numeric values and used to eliminate trips outside the
+                        requested range.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Duration Filtering</h3>
+
+                    <p>
+                        The algorithm extracts the number of nights from the
+                        existing human-readable trip duration and uses the
+                        resulting numeric value for comparison.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Sorting</h3>
+
+                    <p>
+                        Results can be ordered according to supported sort
+                        options, including numeric price ordering. Invalid sort
+                        options are rejected rather than silently producing
+                        unpredictable behavior.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Relevance Ranking</h3>
+
+                    <p>
+                        Keyword results receive relevance scores so that
+                        stronger matches can be presented before weaker
+                        matches. Exact identifying matches receive greater
+                        weight than less-specific textual matches.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Algorithmic Design</h2>
+
+            <p>
+                A major design consideration was deciding whether search
+                operations should occur entirely in MongoDB, entirely in the
+                application, or through a combination of both.
+            </p>
+
+            <p>
+                Performing all processing in memory would provide considerable
+                flexibility, but it would require retrieving unnecessary
+                records as the dataset grows. Performing every operation in
+                MongoDB could reduce transferred data, but would make custom
+                relevance scoring and application-specific ranking behavior
+                more tightly coupled to the database query.
+            </p>
+
+            <p>
+                The enhancement therefore uses a hybrid strategy. Operations
+                that can efficiently reduce the candidate set can be handled
+                during data retrieval, while application-level processing can
+                perform transformations, relevance scoring, and ordering where
+                greater flexibility is useful.
+            </p>
+
+            <p>
+                This separation also fits naturally into the layered
+                architecture introduced during the software engineering
+                enhancement. The repository is responsible for data access,
+                while the service and algorithmic logic can determine how
+                retrieved data should be interpreted and prioritized.
+            </p>
+        </section>
+
+        <section>
+            <h2>Data Structures and Processing</h2>
+
+            <p>
+                Trip records are processed as arrays of structured objects.
+                Intermediate values such as parsed prices, extracted durations,
+                normalized search terms, and relevance scores allow the
+                application to compare values according to their meaning
+                instead of relying on their original display-oriented string
+                representations.
+            </p>
+
+            <p>
+                This distinction is particularly important for price and
+                duration. In the original data model,
+                <code>perPerson</code> is stored as a string and
+                <code>length</code> contains descriptive text such as
+                <code>4 nights / 5 days</code>. Helper functions convert these
+                representations into numeric values when algorithmic
+                comparisons are required.
+            </p>
+
+            <p>
+                Separating normalization from ranking also keeps the algorithm
+                easier to reason about. Data is first converted into a
+                predictable form, then filtered, scored, and sorted according
+                to the requested criteria.
+            </p>
+        </section>
+
+        <section>
+            <h2>Complexity and Trade-Offs</h2>
+
+            <p>
+                For a candidate set containing <em>n</em> trips, filtering and
+                scoring require examining each candidate record. If
+                <em>k</em> searchable fields or matching criteria are evaluated
+                for each record, that portion of the algorithm is approximately
+                <strong>O(n &times; k)</strong>.
+            </p>
+
+            <p>
+                Sorting the resulting candidate collection requires
+                approximately <strong>O(n log n)</strong> time using the
+                runtime's comparison-based array sorting behavior. The overall
+                processing cost can therefore be expressed approximately as:
+            </p>
+
+            <pre><code>O(n × k + n log n)</code></pre>
+
+            <p>
+                For the relatively small Travlr dataset, this cost is modest.
+                More importantly, the design provides a clear path for scaling.
+                Database filtering and indexes can reduce the number of
+                candidates represented by <em>n</em> before application-level
+                ranking occurs.
+            </p>
+
+            <p>
+                This demonstrates an important algorithmic trade-off: the goal
+                is not simply to minimize theoretical complexity in isolation,
+                but to select an approach appropriate to the size of the data,
+                the flexibility required by the application, and the
+                responsibilities of each architectural layer.
+            </p>
+        </section>
+
+        <section>
+            <h2>Validation and Defensive Processing</h2>
+
+            <p>
+                Search parameters are treated as untrusted input. The
+                enhancement validates values before applying them to the
+                algorithm and returns meaningful errors when the requested
+                operation is invalid.
+            </p>
+
+            <p>
+                For example, a minimum price greater than the maximum price is
+                rejected with an <code>INVALID_PRICE_RANGE</code> response
+                rather than producing misleading results. Unsupported sorting
+                values similarly return an
+                <code>INVALID_SORT_OPTION</code> response.
+            </p>
+
+            <p>
+                These checks improve both algorithmic correctness and API
+                reliability because invalid states are detected explicitly
+                rather than being allowed to propagate through the processing
+                pipeline.
+            </p>
+        </section>
+
+        <section>
+            <h2>Verification and Testing</h2>
+
+            <p>
+                Automated tests were added to verify the most important
+                algorithmic behaviors independently of the user interface.
+                The completed enhancement passed all five algorithm tests.
+            </p>
+
+            <pre><code>✔ parsePrice converts string prices to numbers
+✔ parseNights extracts the number of nights
+✔ exact trip-code matches receive the highest score
+✔ rankTrips applies price filters
+✔ rankTrips sorts prices in ascending order
+
+tests: 5
+pass: 5
+fail: 0</code></pre>
+
+            <p>
+                The API was also tested directly with multiple combinations of
+                query parameters. These tests confirmed keyword search, resort
+                filtering, numeric price ranges, duration filtering, descending
+                price sorting, and rejection of invalid query combinations.
+            </p>
+
+            <p>
+                Testing the individual helper functions as well as the complete
+                API behavior helped distinguish algorithm correctness from
+                integration correctness.
+            </p>
+        </section>
+
+        <section>
+            <h2>Technical Skills Demonstrated</h2>
+
+            <ul>
+                <li>Algorithm design and decomposition</li>
+                <li>Search and filtering algorithms</li>
+                <li>Relevance scoring and ranking</li>
+                <li>Comparison-based sorting</li>
+                <li>Data normalization and transformation</li>
+                <li>Numeric parsing of display-oriented data</li>
+                <li>Array processing and structured data manipulation</li>
+                <li>Algorithmic complexity analysis</li>
+                <li>Evaluation of database versus in-memory processing</li>
+                <li>Defensive input validation</li>
+                <li>Automated unit testing</li>
+                <li>REST API query design</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Artifact Files</h2>
+
+            <p>
+                The files below demonstrate the progression from the original
+                Travlr Getaways implementation to the version containing the
+                algorithms and data structures enhancement.
+            </p>
+
+            <div class="artifact-links">
+                <article>
+                    <h3>Original Artifact</h3>
+
+                    <p>
+                        Original Travlr Getaways source code before the CS 499
+                        capstone enhancements.
+                    </p>
+
+                    <!-- Update the href to match the final repository path. -->
+                    <a href="artifacts/original/CS465_Travlr_Getaways_Original.zip">
+                        Download Original Source
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Enhanced Artifact</h3>
+
+                    <p>
+                        Travlr Getaways after implementation of search,
+                        filtering, ranking, sorting, validation, and associated
+                        automated tests.
+                    </p>
+
+                    <!-- Update the href to match the final repository path. -->
+                    <a href="artifacts/algorithms/Travlr_Algorithms_Enhanced.zip">
+                        Download Enhanced Source
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Enhancement Narrative</h2>
+
+            <h3>Artifact Description</h3>
+
+            <p>
+                The artifact used for this enhancement is the Travlr Getaways
+                full-stack web application originally developed during
+                CS 465: Full Stack Development. The application provides a
+                customer-facing travel website, an Angular administrative
+                interface, an Express and Node.js API, and MongoDB persistence
+                through Mongoose.
+            </p>
+
+            <p>
+                The original application could retrieve and display travel
+                packages, but its trip retrieval behavior was intentionally
+                simple. The API returned the complete trip collection, leaving
+                no mechanism for searching, filtering, ranking, or sorting
+                results.
+            </p>
+
+            <h3>Justification for Inclusion</h3>
+
+            <p>
+                I selected this artifact for the algorithms and data structures
+                category because its original trip retrieval behavior provided
+                a clear opportunity to transform a basic data-access operation
+                into a more useful discovery system.
+            </p>
+
+            <p>
+                The enhancement adds search criteria, numeric and textual
+                filtering, relevance scoring, and sorting. It also required
+                converting display-oriented values into representations more
+                appropriate for computation. Prices stored as strings are
+                parsed into numeric values, while descriptive duration strings
+                are interpreted to obtain the number of nights.
+            </p>
+
+            <p>
+                The ranking process demonstrates algorithmic decision making by
+                assigning different weights to different kinds of matches.
+                Exact identifying matches can therefore be prioritized over
+                broader textual matches rather than treating every match as
+                equally significant.
+            </p>
+
+            <p>
+                The enhancement also demonstrates evaluation of design
+                trade-offs. Search and filtering could have been implemented
+                entirely in the Angular client, entirely in MongoDB, or
+                entirely in server-side memory. Instead, I designed the
+                solution so that data-access concerns and flexible
+                application-level processing could remain appropriately
+                separated.
+            </p>
+
+            <h3>Course Outcome Alignment</h3>
+
+            <p>
+                This enhancement most directly demonstrates the program outcome
+                requiring the design and evaluation of computing solutions
+                using algorithmic principles and computer science practices
+                while managing trade-offs involved in design choices.
+            </p>
+
+            <p>
+                The enhancement required consideration of search behavior,
+                filtering order, data representation, ranking, sorting,
+                computational complexity, and the division of responsibility
+                between database queries and in-memory processing.
+            </p>
+
+            <p>
+                It also supports the outcome involving computing practices that
+                deliver value. A trip catalog becomes substantially more useful
+                when users can narrow and order its contents according to their
+                needs rather than manually examining every available record.
+            </p>
+
+            <p>
+                Input validation and explicit handling of unsupported query
+                combinations additionally contribute to the security and
+                defensive-programming outcome by treating externally supplied
+                parameters as untrusted data.
+            </p>
+
+            <h3>Reflection</h3>
+
+            <p>
+                One of the most important lessons from this enhancement was
+                that algorithm design in an application is not limited to
+                selecting a textbook data structure or implementing a sorting
+                routine from scratch. The larger problem is deciding how data
+                should move through a system, where each operation should
+                occur, and what trade-offs are appropriate for the expected
+                workload.
+            </p>
+
+            <p>
+                The original data model also demonstrated how representation
+                choices affect later algorithms. Values such as price and
+                duration were originally designed primarily for display.
+                Performing useful comparisons required first translating those
+                values into numeric representations. This reinforced the
+                relationship between data modeling and algorithm design.
+            </p>
+
+            <p>
+                Another useful part of the process was separating the
+                algorithmic behavior into independently testable functions.
+                Testing price parsing, duration extraction, relevance scoring,
+                filtering, and sorting individually made it easier to verify
+                correctness before testing the behavior through the complete
+                API.
+            </p>
+
+            <p>
+                The final implementation passed all five automated algorithm
+                tests and produced the expected results when exercised through
+                direct API requests. The result is a more capable application
+                and a stronger demonstration of how algorithmic principles can
+                solve practical problems in full-stack software.
+            </p>
+
+            <p>
+                <!-- Update this href to match the final repository path. -->
+                <a href="narratives/Algorithms_Data_Structures_Narrative.docx">
+                    Download Algorithms &amp; Data Structures Narrative (.docx)
+                </a>
+            </p>
+        </section>
+
+        <section>
+            <h2>Course Outcomes Demonstrated</h2>
+
+            <ul>
+                <li>
+                    Design and evaluation of a computing solution using
+                    algorithmic principles, search, filtering, ranking, and
+                    sorting.
+                </li>
+
+                <li>
+                    Evaluation of computational and architectural trade-offs
+                    between database-side and application-side processing.
+                </li>
+
+                <li>
+                    Use of automated testing to verify algorithmic correctness
+                    and expected behavior.
+                </li>
+
+                <li>
+                    Delivery of additional application value through a more
+                    useful and scalable trip-discovery process.
+                </li>
+
+                <li>
+                    Defensive handling and validation of externally supplied
+                    search parameters.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Enhancement</h2>
+
+            <p>
+                The final enhancement extends Travlr Getaways beyond trip
+                management by expanding its MongoDB domain model to support
+                customer bookings, relationships between users and trips,
+                validation, aggregation reporting, and resource-level
+                authorization.
+            </p>
+
+            <p>
+                <a href="databases.html">
+                    Continue to Databases
+                </a>
+            </p>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Justin M. Davis</p>
+        <p>
+            &copy; 2026 Justin M. Davis |
+            CS 499 Computer Science Capstone |
+            Southern New Hampshire University
+        </p>
     </footer>
 </body>
 </html>
