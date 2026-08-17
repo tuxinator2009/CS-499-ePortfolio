@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Justin M. Davis Computer Science ePortfolio for the CS 499 Capstone at Southern New Hampshire University."
+    >
     <title>Justin M. Davis | Computer Science ePortfolio</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,8 +17,8 @@
         <p>Computer Science ePortfolio</p>
     </header>
 
-    <nav>
-        <a href="index.html">Home</a>
+    <nav aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Home</a>
         <a href="code-review.html">Code Review</a>
         <a href="software-engineering.html">Software Engineering</a>
         <a href="algorithms.html">Algorithms &amp; Data Structures</a>
@@ -22,30 +26,238 @@
     </nav>
 
     <main>
-        <section>
+        <section class="intro">
             <h2>Professional Self-Assessment</h2>
 
             <p>
-                Welcome to my Computer Science ePortfolio. This portfolio
-                demonstrates my growth throughout the Computer Science program
-                at Southern New Hampshire University.
-            </p>
-
-            <p>
-                The portfolio includes enhancements demonstrating skills in
+                This ePortfolio represents the culmination of my Bachelor of
+                Science in Computer Science program at Southern New Hampshire
+                University. It demonstrates the development of my skills in
                 software engineering and design, algorithms and data structures,
-                and databases.
+                database development, security, technical communication, and
+                the design of computing solutions that address practical
+                problems.
             </p>
 
             <p>
-                My complete professional self-assessment will be added as the
-                capstone project progresses.
+                Throughout the Computer Science program, I expanded my
+                understanding of software development beyond implementing
+                individual features. My coursework strengthened my ability to
+                evaluate how the components of a system interact, identify
+                trade-offs among possible solutions, design maintainable
+                architectures, work with persistent data, evaluate algorithms,
+                test software, and consider security throughout the development
+                process. The program also reinforced the importance of
+                communicating technical decisions clearly so that software can
+                be understood, evaluated, and maintained by people other than
+                its original developer.
             </p>
+
+            <p>
+                The capstone project brought these areas together by requiring
+                me to revisit an existing full-stack application, critically
+                evaluate its design, and progressively improve it. Rather than
+                treating software engineering, algorithms, databases, and
+                security as isolated topics, the enhancement process
+                demonstrated how decisions in one area affect the others.
+                Changes to application architecture created clearer boundaries
+                for later algorithmic and database functionality, while new
+                functionality introduced additional requirements for
+                validation, testing, authorization, and data protection.
+            </p>
+
+            <!--
+                Replace or expand the paragraphs above with the finalized
+                Professional Self-Assessment before final submission.
+            -->
+        </section>
+
+        <section>
+            <h2>Capstone Artifact</h2>
+
+            <p>
+                The primary artifact featured throughout this portfolio is
+                <strong>Travlr Getaways</strong>, a full-stack web application
+                originally created for CS 465: Full Stack Development. The
+                application combines an Express and Node.js backend, MongoDB
+                persistence through Mongoose, a customer-facing website, an
+                Angular administrative interface, RESTful API communication,
+                and JSON Web Token authentication.
+            </p>
+
+            <p>
+                I selected a single multifaceted artifact for all three
+                enhancement categories so that the portfolio could demonstrate
+                the progressive evolution of one software system. The original
+                application provides a common baseline, while each enhancement
+                addresses a different area of computer science and builds upon
+                the improvements made during the previous stage.
+            </p>
+
+            <div class="enhancement-flow">
+                <article>
+                    <h3>1. Software Engineering &amp; Design</h3>
+                    <p>
+                        The first enhancement restructures the application
+                        around clearer architectural boundaries and improves
+                        authentication, validation, error handling, defensive
+                        programming, and maintainability.
+                    </p>
+                    <p>
+                        <a href="software-engineering.html">
+                            View Software Engineering Enhancement
+                        </a>
+                    </p>
+                </article>
+
+                <article>
+                    <h3>2. Algorithms &amp; Data Structures</h3>
+                    <p>
+                        The second enhancement expands trip discovery through
+                        search, filtering, relevance ranking, sorting, data
+                        processing, validation, and automated testing while
+                        considering the trade-offs involved in where data
+                        processing should occur.
+                    </p>
+                    <p>
+                        <a href="algorithms.html">
+                            View Algorithms &amp; Data Structures Enhancement
+                        </a>
+                    </p>
+                </article>
+
+                <article>
+                    <h3>3. Databases</h3>
+                    <p>
+                        The final enhancement extends the application with a
+                        reservation system incorporating MongoDB relationships,
+                        schema validation, historical booking data, indexing,
+                        aggregation reporting, ownership authorization, and
+                        role-based access control.
+                    </p>
+                    <p>
+                        <a href="databases.html">
+                            View Database Enhancement
+                        </a>
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Code Review</h2>
+
+            <p>
+                Before beginning the enhancements, I performed an informal code
+                review of the original Travlr Getaways application. The review
+                examines the existing software, identifies limitations and
+                potential vulnerabilities, and establishes the enhancement plan
+                followed throughout the capstone.
+            </p>
+
+            <p>
+                <a href="code-review.html">View the Code Review</a>
+            </p>
+        </section>
+
+        <section>
+            <h2>Computer Science Program Outcomes</h2>
+
+            <p>
+                The artifacts, enhancements, narratives, code review, and
+                professional self-assessment presented in this portfolio work
+                together to demonstrate achievement of the five Computer
+                Science program outcomes.
+            </p>
+
+            <ol class="outcomes">
+                <li>
+                    Employ strategies for building collaborative environments
+                    that enable diverse audiences to support organizational
+                    decision making in the field of computer science.
+                </li>
+
+                <li>
+                    Design, develop, and deliver professional-quality oral,
+                    written, and visual communications that are coherent,
+                    technically sound, and appropriately adapted to specific
+                    audiences and contexts.
+                </li>
+
+                <li>
+                    Design and evaluate computing solutions that solve a given
+                    problem using algorithmic principles and computer science
+                    practices and standards appropriate to its solution while
+                    managing the trade-offs involved in design choices.
+                </li>
+
+                <li>
+                    Demonstrate an ability to use well-founded and innovative
+                    techniques, skills, and tools in computing practices for
+                    the purpose of implementing computer solutions that deliver
+                    value and accomplish industry-specific goals.
+                </li>
+
+                <li>
+                    Develop a security mindset that anticipates adversarial
+                    exploits in software architecture and designs to expose
+                    potential vulnerabilities, mitigate design flaws, and
+                    ensure privacy and enhanced security of data and resources.
+                </li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>Explore the ePortfolio</h2>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>Code Review</h3>
+                    <p>
+                        Review of the original artifact and the enhancement
+                        strategy developed for the capstone.
+                    </p>
+                    <a href="code-review.html">View Code Review</a>
+                </article>
+
+                <article>
+                    <h3>Software Engineering</h3>
+                    <p>
+                        Architectural refactoring, maintainability, defensive
+                        programming, authentication, and application security.
+                    </p>
+                    <a href="software-engineering.html">
+                        View Enhancement
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Algorithms &amp; Data Structures</h3>
+                    <p>
+                        Search, filtering, ranking, sorting, data processing,
+                        design trade-offs, and automated testing.
+                    </p>
+                    <a href="algorithms.html">View Enhancement</a>
+                </article>
+
+                <article>
+                    <h3>Databases</h3>
+                    <p>
+                        Reservation modeling, relationships, indexing,
+                        aggregation, authorization, and data integrity.
+                    </p>
+                    <a href="databases.html">View Enhancement</a>
+                </article>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Justin M. Davis</p>
+        <p>
+            &copy; 2026 Justin M. Davis |
+            CS 499 Computer Science Capstone |
+            Southern New Hampshire University
+        </p>
     </footer>
 </body>
 </html>
