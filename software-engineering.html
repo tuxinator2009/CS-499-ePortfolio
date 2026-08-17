@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Software engineering and design enhancement of the Travlr Getaways full-stack application for the CS 499 Computer Science Capstone."
+    >
     <title>Software Engineering | Justin M. Davis</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,10 +17,12 @@
         <p>Computer Science ePortfolio</p>
     </header>
 
-    <nav>
+    <nav aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="code-review.html">Code Review</a>
-        <a href="software-engineering.html">Software Engineering</a>
+        <a href="software-engineering.html" aria-current="page">
+            Software Engineering
+        </a>
         <a href="algorithms.html">Algorithms &amp; Data Structures</a>
         <a href="databases.html">Databases</a>
     </nav>
@@ -26,14 +32,421 @@
             <h2>Software Engineering and Design</h2>
 
             <p>
-                The software engineering and design enhancement and associated
-                narrative will be added during the CS 499 capstone project.
+                The first enhancement to the
+                <strong>Travlr Getaways</strong> application focuses on
+                software architecture, maintainability, defensive programming,
+                authentication, and separation of concerns.
+            </p>
+
+            <p>
+                Travlr Getaways was originally created for
+                <strong>CS 465: Full Stack Development</strong>. The
+                application combines an Express and Node.js backend, MongoDB
+                persistence through Mongoose, an Angular administrative
+                interface, server-rendered customer pages, RESTful API
+                communication, and JSON Web Token authentication.
+            </p>
+
+            <p>
+                The original implementation successfully met the functional
+                requirements of the course project, but the capstone code
+                review identified several opportunities to improve the
+                internal structure and security of the application.
+            </p>
+        </section>
+
+        <section>
+            <h2>Enhancement Overview</h2>
+
+            <p>
+                The primary goal of this enhancement was to replace a
+                controller-centric backend design with a more clearly layered
+                architecture.
+            </p>
+
+            <div class="architecture-comparison">
+                <article>
+                    <h3>Original Architecture</h3>
+
+                    <pre><code>Route
+  ↓
+Controller
+  ↓
+Mongoose Model
+  ↓
+MongoDB</code></pre>
+
+                    <p>
+                        In the original application, controllers handled HTTP
+                        requests and responses while also directly performing
+                        database operations. This worked for a small project,
+                        but it increased coupling and placed multiple
+                        responsibilities in the same modules.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Enhanced Architecture</h3>
+
+                    <pre><code>Route
+  ↓
+Controller
+  ↓
+Service
+  ↓
+Repository
+  ↓
+Mongoose Model
+  ↓
+MongoDB</code></pre>
+
+                    <p>
+                        The enhanced architecture separates HTTP handling,
+                        application rules, validation, and database access into
+                        distinct layers. This makes the application easier to
+                        understand, maintain, test, and extend.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Key Improvements</h2>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>Layered Backend Architecture</h3>
+
+                    <p>
+                        Direct Mongoose queries were removed from the trip
+                        controllers and moved into a dedicated repository
+                        layer. Business rules and validation were moved into a
+                        service layer, while controllers now focus on HTTP
+                        request and response behavior.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>JWT Authentication Middleware</h3>
+
+                    <p>
+                        Authentication logic was extracted into reusable
+                        middleware. The original implementation called
+                        <code>next()</code> outside the asynchronous JWT
+                        verification callback, which could allow request
+                        processing to continue before verification completed.
+                        The enhanced implementation continues only after
+                        successful token validation.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Angular Route Protection</h3>
+
+                    <p>
+                        Administrative Angular routes were protected with a
+                        route guard. The Express API remains the authoritative
+                        security boundary, while client-side route protection
+                        provides defense in depth and improves the user
+                        experience.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Improved Login Flow</h3>
+
+                    <p>
+                        The original Angular login process relied on a fixed
+                        three-second timer before checking whether
+                        authentication had completed. The enhanced version
+                        responds directly to the authentication observable,
+                        eliminating timing assumptions and improving
+                        reliability.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Error Handling and Validation</h3>
+
+                    <p>
+                        Consistent application errors were introduced, along
+                        with improved validation for incoming trip data and
+                        clearer handling of database and authentication
+                        failures.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Configurable Application Behavior</h3>
+
+                    <p>
+                        The hard-coded Angular development origin used for
+                        CORS was replaced with environment-based
+                        configuration, while preserving a localhost fallback
+                        for development.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Technical Skills Demonstrated</h2>
+
+            <ul>
+                <li>Layered application architecture</li>
+                <li>Separation of concerns</li>
+                <li>REST API design</li>
+                <li>Repository and service patterns</li>
+                <li>Asynchronous programming</li>
+                <li>Observable-based Angular workflows</li>
+                <li>JSON Web Token authentication</li>
+                <li>Defensive programming</li>
+                <li>Input validation</li>
+                <li>Error handling</li>
+                <li>Client-side route protection</li>
+                <li>Environment-based configuration</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Artifact Files</h2>
+
+            <p>
+                The source archives below demonstrate the progression from the
+                original CS 465 project to the software-engineering enhanced
+                version developed during CS 499.
+            </p>
+
+            <div class="artifact-links">
+                <article>
+                    <h3>Original Artifact</h3>
+
+                    <p>
+                        Original Travlr Getaways source code before the CS 499
+                        enhancements.
+                    </p>
+
+                    <!-- Update the href to match the final repository path. -->
+                    <a href="artifacts/original/CS465_Travlr_Getaways_Original.zip">
+                        Download Original Source
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Enhanced Artifact</h3>
+
+                    <p>
+                        Travlr Getaways after the software engineering and
+                        design enhancement.
+                    </p>
+
+                    <!-- Update the href to match the final repository path. -->
+                    <a href="artifacts/software-engineering/Travlr_Software_Engineering_Enhanced.zip">
+                        Download Enhanced Source
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Enhancement Narrative</h2>
+
+            <h3>Artifact Description</h3>
+
+            <p>
+                The artifact selected for this enhancement is the Travlr
+                Getaways full-stack web application originally developed
+                during CS 465: Full Stack Development. The application
+                consists of a customer-facing website built with Express and
+                Handlebars, a RESTful API developed with Express and Node.js,
+                an Angular single-page application for administrative
+                management, and a MongoDB database accessed through Mongoose.
+                The application also includes JWT-based authentication for
+                administrative functions such as adding and updating travel
+                packages.
+            </p>
+
+            <p>
+                I selected this artifact because it represents one of the most
+                technically complete projects I completed during the Computer
+                Science program. Unlike projects focused on a single
+                technology, Travlr Getaways integrates front-end development,
+                back-end development, database management, authentication, and
+                API communication into one cohesive application.
+            </p>
+
+            <h3>Justification for Inclusion</h3>
+
+            <p>
+                The original implementation successfully met the functional
+                objectives of the CS 465 project, but reviewing the code
+                revealed several opportunities to improve maintainability,
+                modularity, and overall software quality.
+            </p>
+
+            <p>
+                The primary enhancement focused on software architecture. The
+                original application followed a relatively direct flow in
+                which controllers handled HTTP requests while also performing
+                database operations through Mongoose. Although appropriate for
+                a classroom project, this design tightly coupled multiple
+                responsibilities within the controller layer.
+            </p>
+
+            <p>
+                To improve the design, I refactored the application into a
+                layered architecture consisting of routes, controllers,
+                services, repositories, and the underlying Mongoose models.
+                Controllers now focus on HTTP request and response handling,
+                business rules and validation are centralized in the service
+                layer, and database interactions are isolated within the
+                repository layer.
+            </p>
+
+            <p>
+                Additional improvements included extracting JWT
+                authentication into reusable middleware, correcting the
+                authentication flow so requests continue only after successful
+                token verification, improving API error handling, and making
+                CORS configuration more flexible.
+            </p>
+
+            <p>
+                On the Angular side, I implemented client-side route guards,
+                improved JWT parsing and expiration handling, and redesigned
+                the login workflow to eliminate timing-based navigation.
+            </p>
+
+            <h3>Course Outcome Alignment</h3>
+
+            <p>
+                This enhancement demonstrates progress toward the program
+                outcome involving the use of well-founded computing practices
+                and tools to implement solutions that deliver value. The
+                layered architecture improves maintainability and establishes
+                clearer boundaries for future development.
+            </p>
+
+            <p>
+                The enhancement also contributes strongly to the security
+                outcome. Corrected JWT verification, defensive token handling,
+                route protection, validation, and improved error handling
+                strengthen the application's authentication boundary.
+            </p>
+
+            <p>
+                Clear module responsibilities, documentation, and architectural
+                organization also support professional communication and
+                collaborative development by making the application easier for
+                another developer to understand and extend.
+            </p>
+
+            <h3>Reflection</h3>
+
+            <p>
+                Enhancing this artifact reinforced the importance of software
+                architecture beyond simply producing working code. The
+                original implementation satisfied its functional requirements,
+                but revisiting it with additional experience revealed how
+                clearer separation of responsibilities can make future
+                development significantly easier.
+            </p>
+
+            <p>
+                One of the most valuable lessons from this enhancement was
+                recognizing how separating application concerns simplifies
+                later changes. Moving business logic into service modules and
+                database access into repositories resulted in controllers that
+                are easier to read and reason about.
+            </p>
+
+            <p>
+                Another important lesson involved asynchronous programming. The
+                original authentication workflow attempted to predict when an
+                API request would finish by using a fixed timer. Returning the
+                authentication observable to the component instead allowed
+                navigation to occur at the exact point authentication
+                completed successfully.
+            </p>
+
+            <p>
+                A primary challenge was improving the architecture without
+                unnecessarily breaking existing behavior. Because subsequent
+                capstone enhancements would continue building upon the same
+                application, I intentionally preserved existing API contracts
+                where possible. This allowed the architecture to improve
+                incrementally while maintaining compatibility with the Angular
+                interface.
+            </p>
+
+            <p>
+                Overall, this enhancement transformed the application from a
+                project designed primarily to satisfy coursework requirements
+                into one that more closely resembles a professionally
+                structured full-stack application.
+            </p>
+
+            <p>
+                <!-- Update this href to match the final repository path. -->
+                <a href="narratives/Software_Engineering_Narrative.docx">
+                    Download Software Engineering Narrative (.docx)
+                </a>
+            </p>
+        </section>
+
+        <section>
+            <h2>Course Outcomes Demonstrated</h2>
+
+            <ul>
+                <li>
+                    Professional-quality technical communication through
+                    architectural organization, documentation, and explanation
+                    of design decisions.
+                </li>
+
+                <li>
+                    Use of well-founded software engineering practices to
+                    create a more maintainable and extensible computing
+                    solution.
+                </li>
+
+                <li>
+                    Development of a security mindset through corrected JWT
+                    verification, defensive authentication handling, and
+                    protected administrative functionality.
+                </li>
+
+                <li>
+                    Support for collaborative development through clearer
+                    module boundaries and separation of responsibilities.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Next Enhancement</h2>
+
+            <p>
+                With the application architecture reorganized into clearer
+                layers, the next enhancement builds upon that foundation by
+                introducing more advanced trip discovery through search,
+                filtering, relevance ranking, and deterministic sorting.
+            </p>
+
+            <p>
+                <a href="algorithms.html">
+                    Continue to Algorithms &amp; Data Structures
+                </a>
             </p>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Justin M. Davis</p>
+        <p>
+            &copy; 2026 Justin M. Davis |
+            CS 499 Computer Science Capstone |
+            Southern New Hampshire University
+        </p>
     </footer>
 </body>
 </html>
