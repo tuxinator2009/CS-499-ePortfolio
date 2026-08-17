@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Database enhancement of the Travlr Getaways full-stack application for the CS 499 Computer Science Capstone."
+    >
     <title>Databases | Justin M. Davis</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,27 +17,714 @@
         <p>Computer Science ePortfolio</p>
     </header>
 
-    <nav>
+    <nav aria-label="Main navigation">
         <a href="index.html">Home</a>
         <a href="code-review.html">Code Review</a>
         <a href="software-engineering.html">Software Engineering</a>
         <a href="algorithms.html">Algorithms &amp; Data Structures</a>
-        <a href="databases.html">Databases</a>
+        <a href="databases.html" aria-current="page">Databases</a>
     </nav>
 
     <main>
         <section>
             <h2>Databases</h2>
 
-<p>
-    The database enhancement and associated narrative will be added during the
-    CS 499 capstone project.
-</p>
+            <p>
+                The final enhancement to the
+                <strong>Travlr Getaways</strong> application focuses on
+                expanding the MongoDB data model from basic trip management
+                into a more complete reservation system.
+            </p>
+
+            <p>
+                Before this enhancement, the application stored users and trip
+                records but did not represent customer bookings, ownership of
+                reservation data, historical pricing, or administrative
+                reporting. The database enhancement adds these capabilities
+                while preserving the layered architecture established during
+                the earlier software engineering milestone.
+            </p>
+
+            <p>
+                The completed design demonstrates MongoDB document modeling,
+                relationships between collections, schema validation, indexing,
+                aggregation, historical data preservation, role-based access,
+                and resource-level authorization.
+            </p>
+        </section>
+
+        <section>
+            <h2>Enhancement Overview</h2>
+
+            <div class="architecture-comparison">
+                <article>
+                    <h3>Original Data Model</h3>
+
+                    <pre><code>Users
+
+Trips
+
+No booking relationship
+No customer ownership
+No reservation history
+No booking analytics</code></pre>
+
+                    <p>
+                        The original project satisfied its coursework
+                        requirements by storing user authentication information
+                        and travel-package records. The database did not yet
+                        model transactions or relationships between customers
+                        and trips.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Enhanced Data Model</h3>
+
+                    <pre><code>User
+  ↓
+Booking
+  ↓
+Trip
+
+Booking also preserves:
+• Trip code
+• Trip name
+• Travel date
+• Price at booking time</code></pre>
+
+                    <p>
+                        The enhanced model introduces bookings that reference
+                        both users and trips while also preserving selected
+                        booking-time values for historical accuracy.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Booking and Reservation Model</h2>
+
+            <p>
+                The new booking collection represents the relationship between
+                an authenticated customer and a selected trip. Each booking
+                contains a unique public booking code, user and trip
+                references, traveler count, booking date, travel date, status,
+                price per person, and total price.
+            </p>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>User Relationship</h3>
+
+                    <p>
+                        Each booking stores a MongoDB ObjectId referencing the
+                        user who created the reservation. This supports
+                        customer-specific retrieval and ownership checks.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Trip Relationship</h3>
+
+                    <p>
+                        Each booking also references the selected trip,
+                        allowing current trip information to be populated when
+                        reservation data is displayed.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Historical Snapshot</h3>
+
+                    <p>
+                        Selected trip information is copied into the booking at
+                        creation time, including trip code, trip name, travel
+                        date, and price per person.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Calculated Total</h3>
+
+                    <p>
+                        The reservation service calculates the total booking
+                        price using the number of travelers and the price in
+                        effect when the reservation is created.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Historical Data Integrity</h2>
+
+            <p>
+                One of the most important database design decisions involved
+                balancing references against historical accuracy.
+            </p>
+
+            <p>
+                Storing only a reference to the current trip would reduce
+                duplicated values, but it would create an important problem:
+                changes to a trip after a reservation was created could alter
+                the apparent details of an older booking.
+            </p>
+
+            <p>
+                For example, if the current trip price changes from
+                <code>$799</code> to <code>$999</code>, an existing customer's
+                historical reservation should not suddenly appear to have been
+                made at the new price.
+            </p>
+
+            <p>
+                The enhanced design therefore uses a hybrid model. ObjectId
+                references preserve the relationship to the current user and
+                trip documents, while selected booking-time values are stored
+                directly in the booking document.
+            </p>
+
+            <p>
+                This approach introduces limited intentional duplication in
+                exchange for more accurate historical records.
+            </p>
+        </section>
+
+        <section>
+            <h2>Schema Validation</h2>
+
+            <p>
+                Mongoose schema validation is used to enforce important
+                constraints at the persistence layer.
+            </p>
+
+            <ul>
+                <li>Booking codes are required and unique.</li>
+                <li>User and trip references are required.</li>
+                <li>Traveler counts must fall within the permitted range.</li>
+                <li>Booking status is limited to accepted values.</li>
+                <li>Price values cannot be negative.</li>
+                <li>Travel dates and booking dates are required.</li>
+                <li>Automatic timestamps record document creation and updates.</li>
+            </ul>
+
+            <p>
+                Performing validation at multiple layers helps ensure that
+                malformed data cannot easily reach persistent storage even if
+                one part of the application fails to reject it earlier.
+            </p>
+        </section>
+
+        <section>
+            <h2>Indexing Strategy</h2>
+
+            <p>
+                The booking schema includes indexes designed around the access
+                patterns introduced by the reservation system.
+            </p>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>Unique Booking Code</h3>
+
+                    <p>
+                        A unique index ensures that each public booking
+                        identifier maps to one reservation.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>User and Booking Date</h3>
+
+                    <p>
+                        A compound index on user ID and booking date supports
+                        efficient retrieval of an individual customer's booking
+                        history in chronological order.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Trip and Status</h3>
+
+                    <p>
+                        A compound index on trip ID and booking status supports
+                        trip-level queries and administrative reporting.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Status and Booking Date</h3>
+
+                    <p>
+                        A compound index on status and booking date supports
+                        chronological analysis of confirmed or cancelled
+                        reservations.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>MongoDB Aggregation</h2>
+
+            <p>
+                The enhancement adds an administrative booking summary
+                generated through a MongoDB aggregation pipeline rather than
+                requiring the client to download and process every reservation.
+            </p>
+
+            <pre><code>Confirmed Bookings
+        ↓
+Group by Trip
+        ↓
+Calculate:
+• Booking Count
+• Traveler Count
+• Total Revenue
+• Earliest Booking
+• Latest Booking
+        ↓
+Lookup Trip Details
+        ↓
+Project Report Fields
+        ↓
+Sort by Revenue</code></pre>
+
+            <p>
+                This demonstrates how the database can transform transactional
+                records into useful organizational information.
+            </p>
+
+            <p>
+                The resulting report allows an administrator to compare demand,
+                traveler volume, and estimated revenue across trips without
+                moving all raw booking records into the Angular application for
+                processing.
+            </p>
+        </section>
+
+        <section>
+            <h2>Security and Authorization</h2>
+
+            <p>
+                Adding customer-specific reservation data also expanded the
+                security requirements of the application. A user possessing a
+                valid authentication token should not automatically be allowed
+                to retrieve every booking in the system.
+            </p>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>Customer Ownership</h3>
+
+                    <p>
+                        Booking queries use the authenticated user's ID to
+                        return only reservations associated with that account.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Resource-Level Authorization</h3>
+
+                    <p>
+                        When an individual booking is requested, the service
+                        verifies that the authenticated customer owns the
+                        reservation before returning it.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Role-Based Access</h3>
+
+                    <p>
+                        User accounts now distinguish between customer and
+                        administrator roles. Administrative operations require
+                        the appropriate role in addition to authentication.
+                    </p>
+                </article>
+
+                <article>
+                    <h3>Privilege Protection</h3>
+
+                    <p>
+                        Public account registration explicitly creates customer
+                        accounts rather than trusting a role supplied by the
+                        requesting client.
+                    </p>
+                </article>
+            </div>
+
+            <p>
+                These controls address a common class of authorization
+                vulnerabilities in which an authenticated user attempts to
+                access another user's resource simply by changing an identifier
+                in a request.
+            </p>
+        </section>
+
+        <section>
+            <h2>Database Access Architecture</h2>
+
+            <p>
+                The booking subsystem follows the same layered architecture
+                introduced during the software engineering enhancement.
+            </p>
+
+            <pre><code>Angular Interface
+        ↓
+Express Route
+        ↓
+Authentication / Authorization
+        ↓
+Booking Controller
+        ↓
+Booking Service
+        ↓
+Booking Repository
+        ↓
+Mongoose
+        ↓
+MongoDB</code></pre>
+
+            <p>
+                This keeps database queries isolated within the repository
+                layer, while ownership rules, booking calculations, validation,
+                and application-specific decisions remain in the service
+                layer.
+            </p>
+        </section>
+
+        <section>
+            <h2>Administrative Decision Support</h2>
+
+            <p>
+                The aggregation report also contributes to the Computer Science
+                program outcome involving organizational decision making.
+            </p>
+
+            <p>
+                Raw booking documents are useful for individual transactions,
+                but aggregated information provides a different kind of value.
+                Booking count, traveler volume, and estimated revenue can help
+                administrators identify which trips are receiving the greatest
+                demand and compare performance across available packages.
+            </p>
+
+            <p>
+                Presenting this information through a dedicated administrative
+                view demonstrates how database design can support both
+                operational functionality and higher-level decision making.
+            </p>
+        </section>
+
+        <section>
+            <h2>Verification and Testing</h2>
+
+            <p>
+                The database enhancement added automated tests for booking
+                calculations, booking identifiers, and authorization behavior.
+                These tests were incorporated into the existing backend test
+                suite.
+            </p>
+
+            <pre><code>✔ calculateBookingTotal returns a two-decimal booking total
+✔ booking codes use the expected public format
+✔ a customer can access their own booking
+✔ a customer cannot access another user booking
+✔ an administrator can access another user booking
+✔ parsePrice converts string prices to numbers
+✔ parseNights extracts the number of nights
+✔ exact trip-code matches receive the highest score
+✔ rankTrips applies price filters
+✔ rankTrips sorts prices in ascending order
+
+tests: 10
+pass: 10
+fail: 0</code></pre>
+
+            <p>
+                Manual integration testing also verified that customers could
+                create and retrieve their own bookings, administrators could
+                access aggregated reporting, customer accounts were denied
+                administrative reporting, and customers could no longer create
+                or modify trip records.
+            </p>
+        </section>
+
+        <section>
+            <h2>Technical Skills Demonstrated</h2>
+
+            <ul>
+                <li>MongoDB document modeling</li>
+                <li>Mongoose schema design and validation</li>
+                <li>ObjectId relationships between collections</li>
+                <li>Compound and unique indexing</li>
+                <li>Historical data preservation</li>
+                <li>MongoDB aggregation pipelines</li>
+                <li>Repository-based data access</li>
+                <li>Role-based authorization</li>
+                <li>Resource ownership validation</li>
+                <li>JWT-based identity propagation</li>
+                <li>Defensive data validation</li>
+                <li>RESTful reservation API design</li>
+                <li>Administrative reporting</li>
+                <li>Automated testing</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Artifact Files</h2>
+
+            <p>
+                The files below demonstrate the progression from the original
+                Travlr Getaways project to the version containing the completed
+                database enhancement.
+            </p>
+
+            <div class="artifact-links">
+                <article>
+                    <h3>Original Artifact</h3>
+
+                    <p>
+                        Original Travlr Getaways source code before the CS 499
+                        capstone enhancements.
+                    </p>
+
+                    <!-- Update the href to match the final repository path. -->
+                    <a href="artifacts/original/CS465_Travlr_Getaways_Original.zip">
+                        Download Original Source
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Enhanced Artifact</h3>
+
+                    <p>
+                        Travlr Getaways after implementation of the booking
+                        model, relationships, indexing, aggregation, role-based
+                        access, ownership authorization, and associated tests.
+                    </p>
+
+                    <!-- Update the href to match the final repository path. -->
+                    <a href="artifacts/databases/Travlr_Database_Enhanced.zip">
+                        Download Enhanced Source
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Enhancement Narrative</h2>
+
+            <h3>Artifact Description</h3>
+
+            <p>
+                The artifact selected for this enhancement is the Travlr
+                Getaways full-stack web application originally developed in
+                CS 465: Full Stack Development. The application includes an
+                Angular interface, Express and Node.js API, MongoDB persistence
+                through Mongoose, authentication, and travel-package
+                management.
+            </p>
+
+            <p>
+                Before the database enhancement, the application stored users
+                and trips but did not support customer reservations, ownership
+                of booking records, historical transaction information, or
+                administrative booking analytics.
+            </p>
+
+            <h3>Justification for Inclusion</h3>
+
+            <p>
+                I selected this application for the database category because
+                it provided an opportunity to move beyond basic CRUD behavior
+                and design a more complete domain model around actual travel
+                reservations.
+            </p>
+
+            <p>
+                The new booking model connects users and trips while also
+                preserving selected values from the time a booking is created.
+                This demonstrates the trade-off between normalized references
+                and intentional duplication for historical integrity.
+            </p>
+
+            <p>
+                The schema includes validation and indexes based on the access
+                patterns expected by the application. A dedicated booking
+                repository isolates database interactions, while the service
+                layer manages ownership rules, price calculations, booking
+                creation, and application-level validation.
+            </p>
+
+            <p>
+                The enhancement also introduces a MongoDB aggregation pipeline
+                that groups confirmed bookings by trip and calculates booking
+                totals, traveler counts, revenue, and booking-date ranges. This
+                transforms stored transactional data into information useful
+                for administrative decision making.
+            </p>
+
+            <h3>Course Outcome Alignment</h3>
+
+            <p>
+                This enhancement most directly supports the outcome involving
+                the use of well-founded computing techniques and tools to
+                implement solutions that deliver value and accomplish
+                industry-specific goals.
+            </p>
+
+            <p>
+                A travel application becomes substantially more realistic when
+                it can manage reservations rather than only display trip
+                information. The booking subsystem, customer history, and
+                administrative reporting provide that additional value.
+            </p>
+
+            <p>
+                The enhancement also strongly supports the security outcome.
+                Ownership checks, customer and administrator roles,
+                administrator-only routes, controlled role assignment, and
+                resource-level authorization help prevent authenticated users
+                from accessing or modifying resources they do not own.
+            </p>
+
+            <p>
+                The aggregation report contributes to the outcome involving
+                organizational decision making by converting reservation data
+                into information that administrators can use to compare trip
+                demand and estimated revenue.
+            </p>
+
+            <h3>Reflection</h3>
+
+            <p>
+                This enhancement reinforced that database development involves
+                substantially more than defining fields and storing records.
+                The most important decisions involved determining what should
+                be referenced, what should be preserved historically, which
+                indexes matched expected access patterns, and where
+                authorization rules should be enforced.
+            </p>
+
+            <p>
+                One of the most important design choices was preserving the
+                booking-time price. Referencing only the current trip record
+                would have reduced duplicated values, but it would also allow
+                later price changes to alter the apparent history of an
+                existing reservation.
+            </p>
+
+            <p>
+                Resource ownership introduced another important distinction:
+                authentication answers who a user is, while authorization
+                determines what that user may access. A valid token alone is
+                therefore insufficient to retrieve arbitrary booking records.
+            </p>
+
+            <p>
+                The aggregation pipeline also demonstrated how MongoDB can
+                support analysis and reporting in addition to persistence.
+                Grouping booking records at the database level avoids
+                transferring every transaction to the client merely to
+                calculate summary information.
+            </p>
+
+            <p>
+                The completed backend suite passed all ten automated tests with
+                zero failures. Integration testing also confirmed that booking
+                creation, customer ownership, administrator reporting, and
+                role-based restrictions behaved as intended.
+            </p>
+
+            <p>
+                Overall, this enhancement transformed the database from a
+                simple persistence layer into a more complete domain model
+                supporting relationships, historical integrity, validation,
+                authorization, indexing, and business reporting.
+            </p>
+
+            <p>
+                <!-- Update this href to match the final repository path. -->
+                <a href="narratives/Database_Narrative.docx">
+                    Download Database Narrative (.docx)
+                </a>
+            </p>
+        </section>
+
+        <section>
+            <h2>Course Outcomes Demonstrated</h2>
+
+            <ul>
+                <li>
+                    Implementation of a more complete MongoDB domain model using
+                    relationships, validation, indexing, and historical
+                    snapshots.
+                </li>
+
+                <li>
+                    Use of aggregation to transform transactional data into
+                    information that supports organizational decision making.
+                </li>
+
+                <li>
+                    Delivery of additional industry-specific value through a
+                    secure booking and reservation subsystem.
+                </li>
+
+                <li>
+                    Development of a security mindset through ownership checks,
+                    role-based authorization, controlled privilege assignment,
+                    and protected administrative operations.
+                </li>
+
+                <li>
+                    Professional communication through documented design
+                    decisions, database trade-offs, and clearly separated
+                    application responsibilities.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Capstone Progression</h2>
+
+            <p>
+                This database enhancement completes the progressive evolution
+                of the Travlr Getaways artifact across the three required CS
+                499 categories.
+            </p>
+
+            <pre><code>Original CS 465 Artifact
+        ↓
+Software Engineering &amp; Design
+        ↓
+Algorithms &amp; Data Structures
+        ↓
+Databases</code></pre>
+
+            <p>
+                Together, the three enhancements demonstrate how architecture,
+                algorithms, persistence, security, testing, and communication
+                interact within a complete full-stack application.
+            </p>
+
+            <p>
+                <a href="index.html">
+                    Return to Professional Self-Assessment
+                </a>
+            </p>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Justin M. Davis</p>
+        <p>
+            &copy; 2026 Justin M. Davis |
+            CS 499 Computer Science Capstone |
+            Southern New Hampshire University
+        </p>
     </footer>
 </body>
 </html>
