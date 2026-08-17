@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="description"
+        content="Informal code review of the Travlr Getaways full-stack application for the CS 499 Computer Science Capstone."
+    >
     <title>Code Review | Justin M. Davis</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -13,9 +17,9 @@
         <p>Computer Science ePortfolio</p>
     </header>
 
-    <nav>
+    <nav aria-label="Main navigation">
         <a href="index.html">Home</a>
-        <a href="code-review.html">Code Review</a>
+        <a href="code-review.html" aria-current="page">Code Review</a>
         <a href="software-engineering.html">Software Engineering</a>
         <a href="algorithms.html">Algorithms &amp; Data Structures</a>
         <a href="databases.html">Databases</a>
@@ -23,17 +27,219 @@
 
     <main>
         <section>
-            <h2>Code Review</h2>
+            <h2>Informal Code Review</h2>
 
             <p>
-                The code review for the Travlr Getaways artifact will be added
-                during the CS 499 capstone project.
+                Before beginning the capstone enhancements, I conducted an
+                informal code review of the original
+                <strong>Travlr Getaways</strong> full-stack application created
+                in CS 465: Full Stack Development.
+            </p>
+
+            <p>
+                The purpose of the review was to evaluate the existing
+                implementation, identify weaknesses and opportunities for
+                improvement, and establish a practical enhancement plan in the
+                three required areas of computer science:
+                software engineering and design, algorithms and data
+                structures, and databases.
+            </p>
+
+            <p>
+                The review also considers maintainability, defensive
+                programming, authentication, authorization, input validation,
+                error handling, testing, documentation, and security. The
+                resulting findings became the foundation for the progressive
+                enhancements presented throughout this ePortfolio.
+            </p>
+        </section>
+
+        <section>
+            <h2>Code Review Video</h2>
+
+            <p>
+                The video below walks through the original application before
+                enhancement and explains the specific changes planned for the
+                CS 499 capstone.
+            </p>
+
+            <!--
+                Replace VIDEO_ID with the YouTube video ID after uploading
+                the completed code review as an unlisted video.
+
+                Example:
+                https://www.youtube.com/watch?v=ABC123XYZ
+                becomes:
+                https://www.youtube.com/embed/ABC123XYZ
+            -->
+
+            <div class="video-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/buHAAEVCI70?si=D2EvgoQr5ZTFS_zz"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                </iframe>
+            </div>
+        </section>
+
+        <section>
+            <h2>Review Areas</h2>
+
+            <div class="portfolio-links">
+                <article>
+                    <h3>Software Engineering &amp; Design</h3>
+
+                    <p>
+                        The review examines the original route-to-controller
+                        architecture, controller responsibilities,
+                        authentication middleware, Angular route protection,
+                        error handling, and maintainability.
+                    </p>
+
+                    <p>
+                        The planned enhancement introduces clearer separation
+                        among routes, controllers, services, repositories, and
+                        middleware while strengthening authentication and
+                        defensive programming.
+                    </p>
+
+                    <a href="software-engineering.html">
+                        View Software Engineering Enhancement
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Algorithms &amp; Data Structures</h3>
+
+                    <p>
+                        The review identifies the limitations of retrieving and
+                        displaying the complete trip collection without search,
+                        filtering, ranking, or sorting.
+                    </p>
+
+                    <p>
+                        The planned enhancement introduces improved trip
+                        discovery using query processing, filtering, relevance
+                        scoring, deterministic sorting, and algorithmic trade-off
+                        analysis.
+                    </p>
+
+                    <a href="algorithms.html">
+                        View Algorithms &amp; Data Structures Enhancement
+                    </a>
+                </article>
+
+                <article>
+                    <h3>Databases</h3>
+
+                    <p>
+                        The review evaluates the original MongoDB data model,
+                        including trip lookup behavior, field types, indexes,
+                        user authentication data, and the absence of customer
+                        reservation data.
+                    </p>
+
+                    <p>
+                        The planned enhancement expands the domain model with
+                        reservations, relationships, validation, indexing,
+                        aggregation reporting, ownership checks, and role-based
+                        authorization.
+                    </p>
+
+                    <a href="databases.html">
+                        View Database Enhancement
+                    </a>
+                </article>
+            </div>
+        </section>
+
+        <section>
+            <h2>Key Findings</h2>
+
+            <ul>
+                <li>
+                    Controllers were responsible for both HTTP behavior and
+                    direct database access, increasing coupling and reducing
+                    maintainability.
+                </li>
+
+                <li>
+                    JWT middleware allowed request processing to continue
+                    before asynchronous token verification had completed.
+                </li>
+
+                <li>
+                    Angular administrative routes were not protected by route
+                    guards.
+                </li>
+
+                <li>
+                    Trip retrieval returned the complete collection without
+                    search, filtering, ranking, or sorting.
+                </li>
+
+                <li>
+                    Price and duration values were stored as strings, limiting
+                    numeric processing.
+                </li>
+
+                <li>
+                    The original data model did not support customer bookings,
+                    record ownership, historical booking information, or
+                    administrative reporting.
+                </li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Supporting Material</h2>
+
+            <p>
+                A written transcript of the code review is also available as a
+                supporting reference and accessibility resource.
+            </p>
+
+            <!--
+                Update this href after adding the transcript file to the
+                repository.
+            -->
+
+            <p>
+                <a
+                    href="code-review-transcript.pdf"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    View Code Review Transcript
+                </a>
+            </p>
+        </section>
+
+        <section>
+            <h2>Course Outcome Alignment</h2>
+
+            <p>
+                The code review contributes to multiple Computer Science
+                program outcomes by demonstrating professional technical
+                communication, critical evaluation of an existing computing
+                solution, consideration of design trade-offs, identification
+                of security vulnerabilities, and planning of practical
+                enhancements that deliver additional value.
+            </p>
+
+            <p>
+                The three enhancement pages document how the findings from this
+                review were implemented and refined throughout the capstone.
             </p>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Justin M. Davis</p>
+        <p>
+            &copy; 2026 Justin M. Davis |
+            CS 499 Computer Science Capstone |
+            Southern New Hampshire University
+        </p>
     </footer>
 </body>
 </html>
