@@ -250,11 +250,11 @@ Return Ordered Collection</code></pre>
             <h2>Complexity and Trade-Offs</h2>
 
             <p>
-                For a candidate set containing <em>n</em> trips, filtering and
-                scoring require examining each candidate record. If
-                <em>k</em> searchable fields or matching criteria are evaluated
-                for each record, that portion of the algorithm is approximately
-                <strong>O(n &times; k)</strong>.
+                For a candidate set containing <em>n</em> trips and
+                <em>k</em> unique search tokens, filtering and relevance
+                scoring require approximately
+                <strong>O(n &times; k)</strong> time because each candidate may
+                be evaluated against the normalized search terms.
             </p>
 
             <p>
@@ -395,7 +395,7 @@ fail: 0</code></pre>
                     </p>
 
                     <!-- Update the href to match the final repository path. -->
-                    <a href="artifacts/algorithms/Travlr_Algorithms_Enhanced.zip">
+                    <a href="artifacts/algorithms/Travlr_Getaways_Algorithms.zip">
                         Download Enhanced Source
                     </a>
                 </article>
@@ -530,7 +530,7 @@ fail: 0</code></pre>
 
             <p>
                 <!-- Update this href to match the final repository path. -->
-                <a href="narratives/Algorithms_Data_Structures_Narrative.docx">
+                <a href="documents/Algorithms_Data_Structures_Narrative.docx">
                     Download Algorithms &amp; Data Structures Narrative (.docx)
                 </a>
             </p>
